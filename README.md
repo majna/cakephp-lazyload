@@ -15,7 +15,7 @@ Requirements
 
 Load it up in your bootstrap:
 
-`CakePlugin::load('JeremyHarris\LazyLoad');`
+`CakePlugin::load('JeremyHarris/LazyLoad');`
 
 ## Usage
 
