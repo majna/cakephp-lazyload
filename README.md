@@ -51,6 +51,41 @@ $user = $this->Users->get(1);
 $groupName = $user->group->name;
 ```
 
+## Testing
+
+Sometimes in tests, we create entities that don't necessarily have tables. When
+accessing a property that doesn't exist, the LazyLoad trait will try to load the
+table in order to get association data, which would throw an error if the table
+doesn't exist. To prevent this, you can override `_repository()` in your entity:
+
+```php
+<?php
+namespace App\Model\Entity;
+
+use Cake\ORM\Entity;
+use JeremyHarris\LazyLoad\ORM\LazyLoadEntityTrait;
+
+class User extends Entity
+{
+    use LazyLoadEntityTrait {
+        _repository as _loadRepository;
+    }
+
+    protected function _repository()
+    {
+        try {
+            $repository = $this->_loadRepository();
+        } catch (Exception $e) {
+            return false;
+        }
+        return $repository;
+    }
+}
+```
+
+By default, the LazyLoad trait will throw whatever error bubbles up
+`TableRegistry::get()`.
+
 ## Notes
 
 This is not a replacement for contain, which can write complex queries to dictate

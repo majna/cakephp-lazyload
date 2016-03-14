@@ -4,6 +4,7 @@ namespace JeremyHarris\LazyLoad\Test\TestCase\ORM;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use JeremyHarris\LazyLoad\TestApp\Model\Entity\Comment;
+use JeremyHarris\LazyLoad\TestApp\Model\Entity\TablelessEntity;
 
 /**
  * LazyLoadEntityTrait test
@@ -41,6 +42,20 @@ class LazyLoadEntityTraitTest extends TestCase
         $this->Articles->belongsToMany('Tags', [
             'joinTable' => 'articles_tags',
         ]);
+    }
+
+    /**
+     * tests that we can override _repository to prevent errors from being thrown
+     * in cases where we're creating an entity without a table. this happens in
+     * tests sometimes
+     *
+     * @return void
+     * @see README.md#testing
+     */
+    public function testTablelessEntity()
+    {
+        $entity = new TablelessEntity();
+        $this->assertNull($entity->missing_property);
     }
 
     /**

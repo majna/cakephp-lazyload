@@ -1,6 +1,7 @@
 <?php
 namespace JeremyHarris\LazyLoad\ORM;
 
+use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
@@ -81,6 +82,9 @@ trait LazyLoadEntityTrait
     protected function _lazyLoad($property)
     {
         $repository = $this->_repository($property);
+        if (!($repository instanceof RepositoryInterface)) {
+            return null;
+        }
 
         $association = $repository
             ->associations()
