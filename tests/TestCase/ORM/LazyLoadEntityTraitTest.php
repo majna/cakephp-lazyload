@@ -44,6 +44,66 @@ class LazyLoadEntityTraitTest extends TestCase
     }
 
     /**
+     * tests that we only call the has() method once
+     *
+     * @return void
+     */
+    public function testParentHasAccessedOnce()
+    {
+        $this->Comments = TableRegistry::get('Comments');
+        $this->Comments->belongsTo('Authors', [
+            'foreignKey' => 'user_id'
+        ]);
+
+        $comment = $this->getMock(
+            '\JeremyHarris\LazyLoad\TestApp\Model\Entity\Comment',
+            ['_parentHas', '_repository'],
+            [['id' => 1, 'user_id' => 2]]
+        );
+        $comment
+            ->expects($this->once())
+            ->method('_repository')
+            ->will($this->returnValue($this->Comments));
+        $comment
+            ->expects($this->once())
+            ->method('_parentHas')
+            ->will($this->returnValue(false));
+
+        $this->assertTrue($comment->has('author'));
+    }
+
+    /**
+     * tests that we only call the __get() magic method once
+     *
+     * @return void
+     */
+    public function testParentGetAccessedOnce()
+    {
+        $this->Comments = TableRegistry::get('Comments');
+        $this->Comments->belongsTo('Authors', [
+            'foreignKey' => 'user_id'
+        ]);
+
+        $comment = $this->getMock(
+            '\JeremyHarris\LazyLoad\TestApp\Model\Entity\Comment',
+            ['_parentGet', '_repository'],
+            [['id' => 1, 'user_id' => 2]]
+        );
+        $comment
+            ->expects($this->once())
+            ->method('_repository')
+            ->will($this->returnValue($this->Comments));
+        $comment
+            ->expects($this->once())
+            ->method('_parentGet')
+            ->will($this->returnValue(null));
+
+        $author = $comment->author;
+
+        $this->assertEquals(2, $author->id);
+    }
+
+    /**
      * tests that lazyload doesn't interfere with existing accessor methods
      *
      * @return void

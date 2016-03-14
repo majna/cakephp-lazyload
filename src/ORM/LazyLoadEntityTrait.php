@@ -18,17 +18,28 @@ trait LazyLoadEntityTrait
      * Overrides magic get to check for associated data to lazy load, if that
      * property doesn't already exist
      *
-     * @param strig $property Property
+     * @param string $property Property
      * @return mixed
      */
     public function &__get($property)
     {
-        $entityHas = parent::has($property);
+        $get = $this->_parentGet($property);
 
-        if ($entityHas === false) {
-            $this->_lazyLoad($property);
+        if ($get === null) {
+            $get = $this->_lazyLoad($property);
         }
 
+        return $get;
+    }
+
+    /**
+     * Passthru for testing
+     *
+     * @param string $property Property
+     * @return mixed
+     */
+    protected function &_parentGet($property)
+    {
         return parent::__get($property);
     }
 
@@ -40,12 +51,24 @@ trait LazyLoadEntityTrait
      */
     public function has($property)
     {
-        $entityHas = parent::has($property);
+        $has = $this->_parentHas($property);
 
-        if ($entityHas === false) {
-            $this->_lazyLoad($property);
+        if ($has === false) {
+            $has = $this->_lazyLoad($property);
+            return $has !== null;
         }
 
+        return $has;
+    }
+
+    /**
+     * Passthru for testing
+     *
+     * @param string $property Property
+     * @return mixed
+     */
+    protected function _parentHas($property)
+    {
         return parent::has($property);
     }
 
@@ -64,10 +87,11 @@ trait LazyLoadEntityTrait
             ->getByProperty($property);
 
         if ($association === null) {
-            return;
+            return null;
         }
 
         $repository->loadInto($this, [$association->name()]);
+        return $this->_properties[$property];
     }
 
     /**
