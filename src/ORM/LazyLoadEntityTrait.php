@@ -95,6 +95,11 @@ trait LazyLoadEntityTrait
         }
 
         $repository->loadInto($this, [$association->name()]);
+
+        if (!isset($this->_properties[$property])) {
+            return null;
+        }
+
         return $this->_properties[$property];
     }
 

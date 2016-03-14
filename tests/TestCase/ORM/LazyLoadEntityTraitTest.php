@@ -45,6 +45,22 @@ class LazyLoadEntityTraitTest extends TestCase
     }
 
     /**
+     * tests that trying to lazy load from a new entity doesn't throw errors
+     *
+     * @return void
+     */
+    public function testMissingPrimaryKey()
+    {
+        $this->Comments = TableRegistry::get('Comments');
+        $this->Comments->belongsTo('Authors', [
+            'foreignKey' => 'user_id'
+        ]);
+
+        $comment = new Comment(['user_id' => 2]);
+        $this->assertNull($comment->author);
+    }
+
+    /**
      * tests that we can override _repository to prevent errors from being thrown
      * in cases where we're creating an entity without a table. this happens in
      * tests sometimes
