@@ -1,7 +1,6 @@
 <?php
 namespace JeremyHarris\LazyLoad\ORM;
 
-use Cake\ORM\Association;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
