@@ -8,7 +8,7 @@ A lazy loader for CakePHP entities.
 
 Requirements
 
-- CakePHP >= 3.1.x, < 4.0.0
+- CakePHP ORM (or the full framework) >= 3.1.x, < 4.0.0
 - sloth
 
 `$ composer require jeremyharris/cakephp-lazyload`
