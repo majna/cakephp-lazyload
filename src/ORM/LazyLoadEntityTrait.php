@@ -16,13 +16,13 @@ trait LazyLoadEntityTrait
 {
 
     /**
-     * Overrides magic get to check for associated data to lazy load, if that
+     * Overrides get() to check for associated data to lazy load, if that
      * property doesn't already exist
      *
      * @param string $property Property
      * @return mixed
      */
-    public function &__get($property)
+    public function &get($property)
     {
         $get = $this->_parentGet($property);
 
@@ -41,7 +41,7 @@ trait LazyLoadEntityTrait
      */
     protected function &_parentGet($property)
     {
-        return parent::__get($property);
+        return parent::get($property);
     }
 
     /**
