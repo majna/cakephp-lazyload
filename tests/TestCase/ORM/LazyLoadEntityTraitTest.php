@@ -4,6 +4,7 @@ namespace JeremyHarris\LazyLoad\Test\TestCase\ORM;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use JeremyHarris\LazyLoad\TestApp\Model\Entity\Comment;
+use JeremyHarris\LazyLoad\TestApp\Model\Entity\LazyLoadableEntity;
 use JeremyHarris\LazyLoad\TestApp\Model\Entity\TablelessEntity;
 
 /**
@@ -36,7 +37,7 @@ class LazyLoadEntityTraitTest extends TestCase
         parent::setUp();
 
         $this->Articles = TableRegistry::get('Articles');
-        $this->Articles->entityClass('\JeremyHarris\LazyLoad\TestApp\Model\Entity\LazyLoadableEntity');
+        $this->Articles->entityClass(LazyLoadableEntity::class);
         $this->Articles->belongsTo('Authors');
         $this->Articles->hasMany('Comments');
         $this->Articles->belongsToMany('Tags', [
@@ -87,7 +88,7 @@ class LazyLoadEntityTraitTest extends TestCase
         ]);
 
         $comment = $this->getMock(
-            '\JeremyHarris\LazyLoad\TestApp\Model\Entity\Comment',
+            Comment::class,
             ['_parentHas', '_repository'],
             [['id' => 1, 'user_id' => 2]]
         );
@@ -116,7 +117,7 @@ class LazyLoadEntityTraitTest extends TestCase
         ]);
 
         $comment = $this->getMock(
-            '\JeremyHarris\LazyLoad\TestApp\Model\Entity\Comment',
+            Comment::class,
             ['_parentGet', '_repository'],
             [['id' => 1, 'user_id' => 2]]
         );
@@ -142,7 +143,7 @@ class LazyLoadEntityTraitTest extends TestCase
     public function testGetAccessor()
     {
         $this->Comments = TableRegistry::get('Comments');
-        $this->Comments->entityClass('\JeremyHarris\LazyLoad\TestApp\Model\Entity\Comment');
+        $this->Comments->entityClass(Comment::class);
         $comment = $this->Comments->get(1);
 
         $this->assertEquals('accessor', $comment->accessor);
