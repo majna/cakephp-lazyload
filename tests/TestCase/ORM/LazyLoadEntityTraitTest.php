@@ -76,11 +76,11 @@ class LazyLoadEntityTraitTest extends TestCase
     }
 
     /**
-     * tests that we only call the has() method once
+     * tests that we only has() lazy loads the first time and uses the natural get() after
      *
      * @return void
      */
-    public function testParentHasAccessedOnce()
+    public function testHasLazyLoadsOnce()
     {
         $this->Comments = TableRegistry::get('Comments');
         $this->Comments->belongsTo('Authors', [
@@ -89,27 +89,26 @@ class LazyLoadEntityTraitTest extends TestCase
 
         $comment = $this->getMock(
             Comment::class,
-            ['_parentHas', '_repository'],
+            ['_repository'],
             [['id' => 1, 'user_id' => 2]]
         );
         $comment
             ->expects($this->once())
             ->method('_repository')
             ->will($this->returnValue($this->Comments));
-        $comment
-            ->expects($this->once())
-            ->method('_parentHas')
-            ->will($this->returnValue(false));
 
+        $this->assertTrue($comment->has('author'));
+
+        // ensure it is grabbed from _properties and not lazy loaded again (which calls repository())
         $this->assertTrue($comment->has('author'));
     }
 
     /**
-     * tests that we only call the __get() magic method once
+     * tests that we only get() lazy loads the first time and returns from _properties after
      *
      * @return void
      */
-    public function testParentGetAccessedOnce()
+    public function testGetLazyLoadsOnce()
     {
         $this->Comments = TableRegistry::get('Comments');
         $this->Comments->belongsTo('Authors', [
@@ -118,21 +117,20 @@ class LazyLoadEntityTraitTest extends TestCase
 
         $comment = $this->getMock(
             Comment::class,
-            ['_parentGet', '_repository'],
+            ['_repository'],
             [['id' => 1, 'user_id' => 2]]
         );
         $comment
             ->expects($this->once())
             ->method('_repository')
             ->will($this->returnValue($this->Comments));
-        $comment
-            ->expects($this->once())
-            ->method('_parentGet')
-            ->will($this->returnValue(null));
 
         $author = $comment->author;
 
         $this->assertEquals(2, $author->id);
+
+        // ensure it is grabbed from _properties and not lazy loaded again (which calls repository())
+        $comment->author;
     }
 
     /**
