@@ -77,7 +77,7 @@ trait LazyLoadEntityTrait
      * Lazy loads association data onto the entity
      *
      * @param string $property Property
-     * @return void
+     * @return mixed
      */
     protected function _lazyLoad($property)
     {
