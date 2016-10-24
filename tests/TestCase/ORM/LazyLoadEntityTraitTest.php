@@ -1,6 +1,7 @@
 <?php
 namespace JeremyHarris\LazyLoad\Test\TestCase\ORM;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use JeremyHarris\LazyLoad\TestApp\Model\Entity\Comment;
@@ -73,6 +74,33 @@ class LazyLoadEntityTraitTest extends TestCase
     {
         $entity = new TablelessEntity();
         $this->assertNull($entity->missing_property);
+    }
+
+    /**
+     * tests that unsetting a property doesn't reload it
+     *
+     * @return void
+     */
+    public function testUnsetProperty()
+    {
+        $this->Comments = TableRegistry::get('Comments');
+        $this->Comments->belongsTo('Authors', [
+            'foreignKey' => 'user_id'
+        ]);
+
+        $comment = $this->getMock(
+            Comment::class,
+            ['_repository'],
+            [['id' => 1, 'user_id' => 2]]
+        );
+        $comment
+            ->expects($this->once())
+            ->method('_repository')
+            ->will($this->returnValue($this->Comments));
+
+        $this->assertInstanceOf(EntityInterface::class, $comment->author);
+        $comment->unsetProperty('author');
+        $this->assertNull($comment->author);
     }
 
     /**

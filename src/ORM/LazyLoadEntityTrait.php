@@ -16,6 +16,13 @@ trait LazyLoadEntityTrait
 {
 
     /**
+     * Array of properties that have been lazily loaded
+     *
+     * @var array
+     */
+    protected $_lazyLoaded = [];
+
+    /**
      * Overrides get() to check for associated data to lazy load, if that
      * property doesn't already exist
      *
@@ -82,6 +89,13 @@ trait LazyLoadEntityTrait
      */
     protected function _lazyLoad($property)
     {
+        if (array_search($property, $this->_lazyLoaded) !== false) {
+            if (isset($this->_properties[$property])) {
+                return $this->_properties[$property];
+            }
+            return null;
+        }
+
         $repository = $this->_repository($property);
         if (!($repository instanceof RepositoryInterface)) {
             return null;
@@ -96,6 +110,7 @@ trait LazyLoadEntityTrait
         }
 
         $repository->loadInto($this, [$association->name()]);
+        $this->_lazyLoaded[] = $property;
 
         if (!isset($this->_properties[$property])) {
             return null;
