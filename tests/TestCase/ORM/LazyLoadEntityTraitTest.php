@@ -275,6 +275,19 @@ class LazyLoadEntityTraitTest extends TestCase
     }
 
     /**
+     * tests has() with a arrays
+     *
+     * @return void
+     */
+    public function testHasArray()
+    {
+        $article = $this->Articles->get(1);
+
+        $this->assertTrue($article->has(['author', 'author_id', 'id']));
+        $this->assertFalse($article->has(['author', 'author_id', 'id', 'missing']));
+    }
+
+    /**
      * tests that if we contain an association, the lazy loader doesn't overwrite
      * it
      *

@@ -54,20 +54,23 @@ trait LazyLoadEntityTrait
     /**
      * Overrides has method to account for a lazy loaded property
      *
-     * @param string $property Property
+     * @param string|array $property Property
      * @return bool
      */
     public function has($property)
     {
-        $has = $this->_parentHas($property);
+        foreach ((array)$property as $prop) {
+            $has = $this->_parentHas($prop);
 
-        if ($has === false) {
-            $has = $this->_lazyLoad($property);
-
-            return $has !== null;
+            if ($has === false) {
+                $has = $this->_lazyLoad($prop);
+                if ($has === null) {
+                    return false;
+                }
+            }
         }
 
-        return $has;
+        return true;
     }
 
     /**
