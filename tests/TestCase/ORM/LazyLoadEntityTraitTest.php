@@ -199,20 +199,6 @@ class LazyLoadEntityTraitTest extends TestCase
     }
 
     /**
-     * tests entity's get()
-     *
-     * @return void
-     */
-    public function testEntityMethodGet()
-    {
-        $article = $this->Articles->get(1);
-        $comments = $article->comments;
-        $this->assertInternalType('array', $comments);
-        $this->assertCount(4, $comments);
-        $this->assertInstanceOf(\Cake\Datasource\EntityInterface::class, $comments[0]);
-    }
-
-    /**
      * tests cases where `source()` is empty, caused when an entity is manually
      * created
      *
