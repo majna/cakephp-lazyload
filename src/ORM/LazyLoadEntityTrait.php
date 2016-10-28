@@ -97,6 +97,7 @@ trait LazyLoadEntityTrait
             if (isset($this->_properties[$property])) {
                 return $this->_properties[$property];
             }
+
             return null;
         }
 
