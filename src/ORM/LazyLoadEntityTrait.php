@@ -92,6 +92,7 @@ trait LazyLoadEntityTrait
      */
     protected function _lazyLoad($property)
     {
+        // check if the property has been lazy loaded already (even if the result was null)
         if (array_search($property, $this->_lazyLoaded) !== false) {
             if (isset($this->_properties[$property])) {
                 return $this->_properties[$property];
@@ -99,6 +100,7 @@ trait LazyLoadEntityTrait
             return null;
         }
 
+        // check if the property was set as null to begin with
         if (array_key_exists($property, $this->_properties)) {
             return $this->_properties[$property];
         }
@@ -119,6 +121,7 @@ trait LazyLoadEntityTrait
         $repository->loadInto($this, [$association->name()]);
         $this->_lazyLoaded[] = $property;
 
+        // check if the association didn't exist and therefore didn't load
         if (!isset($this->_properties[$property])) {
             return null;
         }
