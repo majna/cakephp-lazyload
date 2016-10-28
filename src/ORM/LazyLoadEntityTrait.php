@@ -99,6 +99,10 @@ trait LazyLoadEntityTrait
             return null;
         }
 
+        if (array_key_exists($property, $this->_properties)) {
+            return $this->_properties[$property];
+        }
+
         $repository = $this->_repository($property);
         if (!($repository instanceof RepositoryInterface)) {
             return null;

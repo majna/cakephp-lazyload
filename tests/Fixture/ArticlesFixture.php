@@ -41,6 +41,7 @@ class ArticlesFixture extends TestFixture
     public $records = [
         ['author_id' => 1, 'title' => 'First Article', 'body' => 'First Article Body', 'published' => 'Y'],
         ['author_id' => 3, 'title' => 'Second Article', 'body' => 'Second Article Body', 'published' => 'Y'],
-        ['author_id' => 1, 'title' => 'Third Article', 'body' => 'Third Article Body', 'published' => 'Y']
+        ['author_id' => 1, 'title' => 'Third Article', 'body' => 'Third Article Body', 'published' => 'Y'],
+        ['author_id' => null, 'title' => 'Fourth Article', 'body' => 'Fourth Article Body', 'published' => 'Y'],
     ];
 }

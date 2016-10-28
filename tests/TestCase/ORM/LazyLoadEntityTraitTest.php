@@ -47,6 +47,17 @@ class LazyLoadEntityTraitTest extends TestCase
     }
 
     /**
+     * tests nullable associations
+     *
+     * @return void
+     */
+    public function testNullableAssociation()
+    {
+        $article = $this->Articles->get(4);
+        $this->assertNull($article->author);
+    }
+
+    /**
      * tests that trying to lazy load from a new entity doesn't throw errors
      *
      * @return void
