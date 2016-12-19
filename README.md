@@ -135,12 +135,15 @@ If testing plugins entities that don't have tables, make sure to override the
 
 ## Notes
 
-This is not a replacement for `contain()`, which can write complex queries to dictate
+- **Contain:** This is not a replacement for `contain()`, which can write complex queries to dictate
 what data to contain. The lazy loader obeys the association's conditions that
 you set when defining the association on the table, but apart from that it grabs
 all associated data.
-
-*The lazy loader requires that your result set is hydrated in order to
-provide lazy loading functionality.*
+- **Speed:** Lazy loading in this manner isn't necessarily a speed improvement. In fact, it can be a
+detriment to speed in certain cases, such as looping over entities that lazy load associations within
+the loop (creates a single SQL query per-item rather than using joins or the ORM). This plugin is
+intended as a helper for bootstrapping projects.
+- **Hydration:** The lazy loader requires that your result set is hydrated in order to
+provide lazy loading functionality.
 
 > Special thanks to @lorenzo for reviewing the plugin before its initial release!
