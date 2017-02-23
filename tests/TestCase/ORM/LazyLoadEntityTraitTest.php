@@ -133,6 +133,29 @@ class LazyLoadEntityTraitTest extends TestCase
     }
 
     /**
+     * tests that lazy loading a previously unset eager loaded property does not
+     * reload the property
+     *
+     * @return void
+     */
+    public function testUnsetEagerLoadedProperty()
+    {
+        $this->Comments = TableRegistry::get('Comments');
+        $this->Comments->entityClass(LazyLoadableEntity::class);
+        $this->Comments->belongsTo('Authors', [
+            'foreignKey' => 'user_id'
+        ]);
+
+        $comment = $this->Comments->find()
+            ->contain(['Authors'])
+            ->first();
+
+        $this->assertInstanceOf(EntityInterface::class, $comment->author);
+        $comment->unsetProperty('author');
+        $this->assertNull($comment->author);
+    }
+
+    /**
      * tests that we only has() lazy loads the first time and uses the natural get() after
      *
      * @return void
