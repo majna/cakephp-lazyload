@@ -257,7 +257,7 @@ class LazyLoadEntityTraitTest extends TestCase
     public function testDeepLazyLoad()
     {
         $this->Comments = TableRegistry::get('Comments');
-        $this->Comments->entityClass('\JeremyHarris\LazyLoad\TestApp\Model\Entity\LazyLoadableEntity');
+        $this->Comments->entityClass(LazyLoadableEntity::class);
         $this->Comments->belongsTo('Users');
 
         $article = $this->Articles->get(1);
