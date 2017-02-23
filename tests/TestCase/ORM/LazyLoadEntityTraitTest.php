@@ -47,6 +47,24 @@ class LazyLoadEntityTraitTest extends TestCase
     }
 
     /**
+     * tests formatting results on a lazy loaded non-existent record
+     *
+     * @return void
+     */
+    public function testFormatResultsNonExistentRecord()
+    {
+        $this->Articles->Authors->eventManager()
+            ->on('Model.beforeFind', function ($event, $query) {
+                $query->formatResults(function ($resultSet) {
+                    return $resultSet;
+                });
+            });
+        $article = $this->Articles->get(4);
+        $author = $article->author;
+        $this->assertNull($author);
+    }
+
+    /**
      * tests nullable associations
      *
      * @return void
