@@ -16,11 +16,11 @@ trait LazyLoadEntityTrait
 {
 
     /**
-     * Array of properties that have been lazily loaded
+     * Array of properties that have been unset
      *
      * @var array
      */
-    protected $_lazyLoaded = [];
+    protected $_unsetProperties = [];
 
     /**
      * Overrides magic get to check for associated data to lazy load, if that
@@ -85,6 +85,21 @@ trait LazyLoadEntityTrait
     }
 
     /**
+     * Unsets a property, marking it as not to be lazily loaded in the future
+     *
+     * @param array|string $property Property
+     * @return $this
+     */
+    public function unsetProperty($property)
+    {
+        $property = (array)$property;
+        foreach ($property as $prop) {
+            $this->_unsetProperties[] = $prop;
+        }
+        return parent::unsetProperty($property);
+    }
+
+    /**
      * Lazy loads association data onto the entity
      *
      * @param string $property Property
@@ -92,8 +107,8 @@ trait LazyLoadEntityTrait
      */
     protected function _lazyLoad($property)
     {
-        // check if the property has been lazy loaded already (even if the result was null)
-        if (array_search($property, $this->_lazyLoaded) !== false) {
+        // check if the property has been unset at some point
+        if (array_search($property, $this->_unsetProperties) !== false) {
             if (isset($this->_properties[$property])) {
                 return $this->_properties[$property];
             }
@@ -120,7 +135,6 @@ trait LazyLoadEntityTrait
         }
 
         $repository->loadInto($this, [$association->name()]);
-        $this->_lazyLoaded[] = $property;
 
         // check if the association didn't exist and therefore didn't load
         if (!isset($this->_properties[$property])) {

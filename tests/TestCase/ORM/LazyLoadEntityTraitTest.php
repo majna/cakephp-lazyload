@@ -47,6 +47,24 @@ class LazyLoadEntityTraitTest extends TestCase
     }
 
     /**
+     * tests formatting results on a lazy loaded non-existent record
+     *
+     * @return void
+     */
+    public function testFormatResultsNonExistentRecord()
+    {
+        $this->Articles->Authors->eventManager()
+            ->on('Model.beforeFind', function ($event, $query) {
+                $query->formatResults(function ($resultSet) {
+                    return $resultSet;
+                });
+            });
+        $article = $this->Articles->get(4);
+        $author = $article->author;
+        $this->assertNull($author);
+    }
+
+    /**
      * tests nullable associations
      *
      * @return void
@@ -108,6 +126,29 @@ class LazyLoadEntityTraitTest extends TestCase
             ->expects($this->once())
             ->method('_repository')
             ->will($this->returnValue($this->Comments));
+
+        $this->assertInstanceOf(EntityInterface::class, $comment->author);
+        $comment->unsetProperty('author');
+        $this->assertNull($comment->author);
+    }
+
+    /**
+     * tests that lazy loading a previously unset eager loaded property does not
+     * reload the property
+     *
+     * @return void
+     */
+    public function testUnsetEagerLoadedProperty()
+    {
+        $this->Comments = TableRegistry::get('Comments');
+        $this->Comments->entityClass(LazyLoadableEntity::class);
+        $this->Comments->belongsTo('Authors', [
+            'foreignKey' => 'user_id'
+        ]);
+
+        $comment = $this->Comments->find()
+            ->contain(['Authors'])
+            ->first();
 
         $this->assertInstanceOf(EntityInterface::class, $comment->author);
         $comment->unsetProperty('author');
@@ -225,7 +266,7 @@ class LazyLoadEntityTraitTest extends TestCase
     public function testDeepLazyLoad()
     {
         $this->Comments = TableRegistry::get('Comments');
-        $this->Comments->entityClass('\JeremyHarris\LazyLoad\TestApp\Model\Entity\LazyLoadableEntity');
+        $this->Comments->entityClass(LazyLoadableEntity::class);
         $this->Comments->belongsTo('Users');
 
         $article = $this->Articles->get(1);
